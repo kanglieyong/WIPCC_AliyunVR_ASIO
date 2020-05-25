@@ -54,7 +54,6 @@ int main(int argc, char *argv[])
   long end = vrfstr.tellg();
   vrfstr.close();
   content_len = end - start;
-
   //cout << to_string(content_len) << endl;
   //return 0;
 
@@ -71,10 +70,10 @@ int main(int argc, char *argv[])
 
 	string resp_str;
 	std::copy(body.get(), body.get() + body_len, back_inserter(resp_str));
-#ifdef _WIN32
-	resp_str = boost::locale::conv::between(resp_str, "UTF-8", "GB2312");
-#endif
-	cout << resp_str << endl;
+//#ifdef _WIN32
+//	resp_str = boost::locale::conv::between(resp_str, "UTF-8", "GB2312");
+//#endif
+	//cout << resp_str << endl;
     stringstream ss;
     ss << resp_str;
 
@@ -125,8 +124,8 @@ void connect_to_file(iostream& s, const string &server, int& len)
   string status_message;
   getline(s, status_message);
 
-  cout << "request  cost: " << chrono::duration_cast<chrono::milliseconds>(t1 - t0).count() << " milliseconds\n"
-	  << "response cost: " << chrono::duration_cast<chrono::milliseconds>(t3 - t2).count() << " milliseconds\n";
+  //cout << "request  cost: " << chrono::duration_cast<chrono::milliseconds>(t1 - t0).count() << " milliseconds\n"
+	 // << "response cost: " << chrono::duration_cast<chrono::milliseconds>(t3 - t2).count() << " milliseconds\n";
 
   if (!s || http_version.substr(0, 5) != "HTTP/")
       throw runtime_error{"Invalid response\n"};
