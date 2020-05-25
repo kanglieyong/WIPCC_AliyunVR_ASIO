@@ -3,7 +3,7 @@
 #include <boost/property_tree/ptree.hpp>
 #include <boost/property_tree/xml_parser.hpp>
 #include <boost/property_tree/json_parser.hpp>
-#include <boost/filesystem.hpp>
+//#include <boost/filesystem.hpp>
 #include <boost/locale.hpp>
 #include <iostream>
 #include <string>
@@ -19,7 +19,7 @@ using namespace std;
 string appKey/* = "oI8amHfNKhLvO87K"*/;
 string accessToken/* = "18de77cbf3444c2390465fe3f6de2c7e"*/;
 string vrfile{""};
-uintmax_t contentLen/* = 94694*/;
+long content_len/* = 94694*/;
 
 void connect_to_file(iostream& s, const string &server, int& sz);
 
@@ -47,30 +47,30 @@ int main(int argc, char *argv[])
     vrfile = "nls-sample-16k.wav"; 
   }
   //boost::filesystem::path media_path = boost::filesystem::current_path() / vrfile;
-  //contentLen = boost::filesystem::file_size(media_path);
-  fstream vrfstr(vrfile, ios::in | ios::binary);
+  //content_len = boost::filesystem::file_size(media_path);
+  ofstream vrfstr(vrfile, ios::binary);
   long start = vrfstr.tellg();
   vrfstr.seekg(0, ios::end);
   long end = vrfstr.tellg();
   vrfstr.close();
-  contentLen = end - start;
+  content_len = end - start;
 
-  //cout << to_string(contentLen) << endl;
+  //cout << to_string(content_len) << endl;
   //return 0;
 
   // 3. Connect to Server
   try {
     string server = "nls-gateway.cn-shanghai.aliyuncs.com";
     boost::asio::ip::tcp::iostream s{server, "http"};
-    int resp_body_size = 0;
-    connect_to_file(s, server, resp_body_size);
+    int body_len = 0;
+    connect_to_file(s, server, body_len);
 
-	auto data = std::make_unique<char[]>(resp_body_size);
-	s.read(data.get(), resp_body_size);
+	auto body = std::make_unique<char[]>(body_len);
+	s.read(body.get(), body_len);
     s.close();
 
 	string resp_str;
-	std::copy(data.get(), data.get() + resp_body_size, back_inserter(resp_str));
+	std::copy(body.get(), body.get() + body_len, back_inserter(resp_str));
 #ifdef _WIN32
 	resp_str = boost::locale::conv::between(resp_str, "UTF-8", "GB2312");
 #endif
@@ -101,18 +101,18 @@ void connect_to_file(iostream& s, const string &server, int& len)
 
   s << "POST " << "/stream/v1/asr?appkey=" + appKey + "&sample_rate=8000" + " HTTP/1.1\r\n";
   s << "HOST:" << "nls-gateway.cn-shanghai.aliyuncs.com\r\n";
-  s << "Content-Length:" << to_string(contentLen) << "\r\n";
+  s << "Content-Length:" << to_string(content_len) << "\r\n";
   s << "Content-type:application/octet-stream\r\n";
   s << "X-NLS-Token:" << accessToken << "\r\n";
   s << "Accept-Encoding: gzip" << "\r\n";
   s << "\r\n";
 
-  fstream ofstr(vrfile.c_str());
+  ofstream ofstr(vrfile.c_str(), ios::binary);
   auto t0 = chrono::system_clock::now();
   //s << ofstr.rdbuf();
-  auto buff = std::make_unique<char[]>(contentLen);
-  ofstr.read(buff.get(), contentLen);
-  s.write(buff.get(), contentLen);
+  auto buff = std::make_unique<char[]>(content_len);
+  ofstr.read(buff.get(), content_len);
+  s.write(buff.get(), content_len);
   s.flush();
   auto t1 = chrono::system_clock::now();
   ofstr.close();
@@ -137,8 +137,8 @@ void connect_to_file(iostream& s, const string &server, int& len)
   string header;
   while (getline(s, header) && header !="\r") {
     if ( header.substr(0, 14) == "Content-Length" ) {
-      string::size_type lenEnd = header.find('\r');
-      len = stoi(header.substr(16, lenEnd-16)); 
+      string::size_type end_pos = header.find('\r');
+      len = stoi(header.substr(16, end_pos-16)); 
       //std::cout << "len:" << len << endl;
     }
   }
