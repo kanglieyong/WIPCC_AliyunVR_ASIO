@@ -70,9 +70,6 @@ int main(int argc, char *argv[])
 
 	string resp_str;
 	std::copy(body.get(), body.get() + body_len, back_inserter(resp_str));
-//#ifdef _WIN32
-//	resp_str = boost::locale::conv::between(resp_str, "GBK", "UTF-8");
-//#endif
 	//cout << resp_str << endl;
     stringstream ss;
     ss << resp_str;
@@ -84,6 +81,9 @@ int main(int argc, char *argv[])
     int    status  = tree.get<int>("status");
     string message = tree.get<string>("message");
 
+	#ifdef _WIN32
+		result = boost::locale::conv::between(result, "GBK", "UTF-8");
+	#endif
     cout << "{\n\t\"task_id\":\"" << task_id 
 		<< "\", \n\t\"result\": \"" << result 
 		<< "\", \n\t\"status\": " << status 
