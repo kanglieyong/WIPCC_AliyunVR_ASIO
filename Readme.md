@@ -1,15 +1,11 @@
-### Build
-* Linux
+### Platforms
+#### Linux
 ```
- $ make
- $ make clean
- $ make run
+ $ make #build
+ $ make clean #clean
+ $ make run #run
 ```
 
-* Windows
+#### Windows
+* Currently only `VS2015 Win32 Debug` mode supported, but it's easy to support `VS2013/15/17/19 Win32/Win64 Debug/Release` since the `boost.asio` api changes little.
 
-warning:
-
-  (1). currently only `VS2015 Win32 Debug` mode supported.
-
-  (2). some `GB2312` encoding bug on Windows CMD, suggest run `WIPCC_AliyunVR_ASIO.exe` on `Git Bash`.
