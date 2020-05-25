@@ -64,13 +64,13 @@ int main(int argc, char *argv[])
     int body_len = 0;
     connect_to_file(s, server, body_len);
 
-	auto body = std::make_unique<char[]>(body_len);
-	s.read(body.get(), body_len);
+    auto body = std::make_unique<char[]>(body_len);
+    s.read(body.get(), body_len);
     s.close();
 
-	string resp_str;
-	std::copy(body.get(), body.get() + body_len, back_inserter(resp_str));
-	//cout << resp_str << endl;
+    string resp_str;
+    std::copy(body.get(), body.get() + body_len, back_inserter(resp_str));
+    //cout << resp_str << endl;
     stringstream ss;
     ss << resp_str;
 
@@ -81,14 +81,14 @@ int main(int argc, char *argv[])
     int    status  = tree.get<int>("status");
     string message = tree.get<string>("message");
 
-	#ifdef _WIN32
-		result = boost::locale::conv::between(result, "GBK", "UTF-8");
-	#endif
+#ifdef _WIN32
+    result = boost::locale::conv::between(result, "GBK", "UTF-8");
+#endif
     cout << "{\n\t\"task_id\":\"" << task_id 
-		<< "\", \n\t\"result\": \"" << result 
-		<< "\", \n\t\"status\": " << status 
-		<< ",\n\t\"message\": \"" << message
-		<< "\"\n}" << endl;
+        << "\", \n\t\"result\": \"" << result 
+        << "\", \n\t\"status\": " << status 
+        << ",\n\t\"message\": \"" << message
+        << "\"\n}" << endl;
   } catch (std::exception &e) {
     cout << "Exception:" << e.what() << "\n";
     return 1;
@@ -132,7 +132,7 @@ void connect_to_file(iostream& s, const string &server, int& len)
 	 // << "response cost: " << chrono::duration_cast<chrono::milliseconds>(t3 - t2).count() << " milliseconds\n";
 
   if (!s || http_version.substr(0, 5) != "HTTP/")
-      throw runtime_error{"Invalid response\n"};
+    throw runtime_error{"Invalid response\n"};
 
   if (status_code != 200)
     throw runtime_error{"Response returned with status code"};
