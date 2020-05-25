@@ -1,3 +1,10 @@
 # Linux
 /WIPCC_AliyunVR_ASIO.out
 /Main.o
+
+# VS2015
+.vs/
+Debug/
+WIPCC_AliyunVR_ASIO.VC.VC.opendb
+WIPCC_AliyunVR_ASIO.VC.db
+WIPCC_AliyunVR_ASIO.vcxproj.filters
