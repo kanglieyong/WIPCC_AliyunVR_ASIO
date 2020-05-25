@@ -48,7 +48,7 @@ int main(int argc, char *argv[])
   }
   //boost::filesystem::path media_path = boost::filesystem::current_path() / vrfile;
   //content_len = boost::filesystem::file_size(media_path);
-  ofstream vrfstr(vrfile, ios::binary);
+  fstream vrfstr(vrfile, ios::in | ios::binary);
   long start = vrfstr.tellg();
   vrfstr.seekg(0, ios::end);
   long end = vrfstr.tellg();
@@ -107,7 +107,7 @@ void connect_to_file(iostream& s, const string &server, int& len)
   s << "Accept-Encoding: gzip" << "\r\n";
   s << "\r\n";
 
-  ofstream ofstr(vrfile.c_str(), ios::binary);
+  fstream ofstr(vrfile.c_str(), ios::in | ios::binary);
   auto t0 = chrono::system_clock::now();
   //s << ofstr.rdbuf();
   auto buff = std::make_unique<char[]>(content_len);
