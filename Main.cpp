@@ -21,7 +21,7 @@ string accessToken/* = "18de77cbf3444c2390465fe3f6de2c7e"*/;
 string vrfile{""};
 long content_len/* = 94694*/;
 
-void connect_to_file(iostream& s, const string &server, int& sz);
+void http_connect(iostream& s, int& sz);
 
 int main(int argc, char *argv[])
 {
@@ -62,7 +62,7 @@ int main(int argc, char *argv[])
     string server = "nls-gateway.cn-shanghai.aliyuncs.com";
     boost::asio::ip::tcp::iostream s{server, "http"};
     int body_len = 0;
-    connect_to_file(s, server, body_len);
+    http_connect(s, body_len);
 
     auto body = std::make_unique<char[]>(body_len);
     s.read(body.get(), body_len);
@@ -97,7 +97,7 @@ int main(int argc, char *argv[])
   return 0;
 }
 
-void connect_to_file(iostream& s, const string &server, int& len)
+void http_connect(iostream& s, int& len)
 {
   if (!s)
     throw runtime_error("can't connect\n");
@@ -111,25 +111,25 @@ void connect_to_file(iostream& s, const string &server, int& len)
   s << "\r\n";
 
   fstream ofstr(vrfile.c_str(), ios::in | ios::binary);
-  auto t0 = chrono::system_clock::now();
+  //auto t0 = chrono::system_clock::now();
   //s << ofstr.rdbuf();
   auto buff = std::make_unique<char[]>(content_len);
   ofstr.read(buff.get(), content_len);
   s.write(buff.get(), content_len);
   s.flush();
-  auto t1 = chrono::system_clock::now();
+  //auto t1 = chrono::system_clock::now();
   ofstr.close();
 
   string http_version;
   unsigned int status_code;
-  auto t2 = chrono::system_clock::now();
+  //auto t2 = chrono::system_clock::now();
   s >> http_version >> status_code;
-  auto t3 = chrono::system_clock::now();
+  //auto t3 = chrono::system_clock::now();
   string status_message;
   getline(s, status_message);
 
-  //cout << "request  cost: " << chrono::duration_cast<chrono::milliseconds>(t1 - t0).count() << " milliseconds\n"
-	 // << "response cost: " << chrono::duration_cast<chrono::milliseconds>(t3 - t2).count() << " milliseconds\n";
+  //cout << "request  costs: " << chrono::duration_cast<chrono::milliseconds>(t1 - t0).count() << " milliseconds\n"
+	  // << "response costs: " << chrono::duration_cast<chrono::milliseconds>(t3 - t2).count() << " milliseconds\n";
 
   if (!s || http_version.substr(0, 5) != "HTTP/")
     throw runtime_error{"Invalid response\n"};
