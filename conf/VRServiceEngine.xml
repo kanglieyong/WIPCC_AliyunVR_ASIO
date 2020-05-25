@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<VRServiceEngine MakeTestLog="true" Debug="false" EngineType="ALIWEBENGINE" AppId="687bfaa7c8b8452eae8a101335d7c4d9" appKey="oI8amHfNKhLvO87K" >
+	<Models version="0.0.0.0">
+		<Model Type="1" DefaultValue ="0" DefaultName ="1" >
+			<Selection Name="天气" Value="1" KeyWord ="天气"/>
+			<Selection Name="空号" Value="1" KeyWord ="空号,空"/>
+			<Selection Name="无法接通" Value="0" KeyWord ="无法接通，无法"/>	
+		</Model>	
+		<Model Type="2" DefaultValue ="1" DefaultName ="1" PinYinMatch="true">
+			<Selection Name="非常满意" Value="1" KeyWord ="非常满意,真棒,非常好,非常给力"/>
+			<Selection Name="满意" Value="2" KeyWord ="不错,还行,比较满意,满意"/>
+			<Selection Name="一般" Value="3" KeyWord ="一般吧,一般,凑合"/>
+			<Selection Name="不满意" Value="4" KeyWord ="比较差,不好用,凑合用,不满意"/>
+			<Selection Name="非常不满意" Value="5" KeyWord ="最差,太差,超级垃圾,滚蛋,非常不满意"/>
+		</Model>	
+	</Models>
+</VRServiceEngine>
