@@ -16,10 +16,10 @@
 
 using namespace std;
 
-string appKey/* = "oI8amHfNKhLvO87K"*/;
-string accessToken/* = "18de77cbf3444c2390465fe3f6de2c7e"*/;
+string appKey;
+string accessToken;
 
-void http_connect(shared_ptr<iostream> s, const string& vrfile, size_t content_len, int& sz);
+void http_connect(shared_ptr<iostream> s, const string& vrfile, long content_len, int& sz);
 
 int main(int argc, char *argv[])
 {
@@ -43,7 +43,7 @@ int main(int argc, char *argv[])
   
   int counter{0};
   for (;;) {
-    std::cout << "[ " << counter++ << " ] WavName: ";
+    cout << "[ " << counter++ << " ] WavName: ";
     string vrfile;
     getline(cin, vrfile);
     if (vrfile.empty()) {
@@ -54,7 +54,7 @@ int main(int argc, char *argv[])
     //boost::filesystem::path media_path = boost::filesystem::current_path() / vrfile;
     //content_len = boost::filesystem::file_size(media_path);
     fstream vrfstrm(vrfile, ios::in | ios::binary);
-    size_t content_len = 0;
+    long content_len = 0;
     long start = vrfstrm.tellg();
     vrfstrm.seekg(0, ios::end);
     long end = vrfstrm.tellg();
@@ -107,7 +107,7 @@ int main(int argc, char *argv[])
   return 0;
 }
 
-void http_connect(shared_ptr<iostream> s, const string& vrfile, size_t content_len, int& body_len)
+void http_connect(shared_ptr<iostream> s, const string& vrfile, long content_len, int& body_len)
 {
   if (!s)
     throw runtime_error("can't connect\n");
