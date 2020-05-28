@@ -60,13 +60,18 @@ int main(int argc, char *argv[])
     long end = vrfstrm.tellg();
     vrfstrm.close();
     content_len = end - start;
+    if (content_len == 0) {
+      cout << "doesn't exists file!\n";
+      continue;
+    }
     //cout << to_string(content_len) << endl;
     //return 0;
 
     // 3. Connect to Server
     try {
       int body_len = 0;
-      http_connect(s, vrfile, content_len, body_len);
+      // yes, content_len-58, we should remove wav header
+      http_connect(s, vrfile, content_len-58, body_len);
 
       // Http Response: Parse Body
       auto body = std::make_unique<char[]>(body_len);
@@ -117,14 +122,16 @@ void http_connect(shared_ptr<iostream> s, const string& vrfile, size_t content_l
   *s << "\r\n";
 
   // Http Request: SetBody
-  fstream ofstr(vrfile.c_str(), ios::in | ios::binary);
+  fstream ofstrm(vrfile.c_str(), ios::in | ios::binary);
+  // Skip Wav Header
+  ofstrm.seekg(58);
   //auto t0 = chrono::system_clock::now();
   auto buff = std::make_unique<char[]>(content_len);
-  ofstr.read(buff.get(), content_len);
+  ofstrm.read(buff.get(), content_len);
   s->write(buff.get(), content_len);
   s->flush();
   //auto t1 = chrono::system_clock::now();
-  ofstr.close();
+  ofstrm.close();
 
   // Http Response: Parse Header
   string http_version;
