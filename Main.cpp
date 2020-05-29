@@ -36,7 +36,7 @@ int main(int argc, char *argv[])
              appKey      = node.second.get<string>("appKey");
     }
   }
-  //cout << "accessToken: " << accessToken << "\nappKey: " << appKey << endl;
+  cout << "accessToken: " << accessToken << "\nappKey: " << appKey << endl;
 
   string server("nls-gateway.cn-shanghai.aliyuncs.com");
   auto s = make_shared<boost::asio::ip::tcp::iostream>(server, "http");
@@ -103,6 +103,7 @@ int main(int argc, char *argv[])
       return 1;
     }
   }
+  getchar();
 
   return 0;
 }
@@ -149,7 +150,7 @@ void http_connect(shared_ptr<iostream> s, const string& vrfile, long content_len
     throw runtime_error{"Invalid response\n"};
 
   if (status_code != 200)
-    throw runtime_error{"Response returned with status code"};
+    throw runtime_error{"Response returned with status code " + to_string(status_code)};
 
   string header;
   while (getline(*s, header) && header !="\r") {

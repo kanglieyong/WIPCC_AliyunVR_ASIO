@@ -5,6 +5,7 @@
 # VS2015
 .vs/
 Debug/
+Release/
 WIPCC_AliyunVR_ASIO.VC.VC.opendb
 WIPCC_AliyunVR_ASIO.VC.db
 WIPCC_AliyunVR_ASIO.vcxproj.filters
