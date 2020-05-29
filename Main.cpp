@@ -71,7 +71,7 @@ int main(int argc, char *argv[])
     try {
       int body_len = 0;
       // yes, content_len-58, we should remove wav header
-      http_connect(s, vrfile, content_len-58, body_len);
+      http_connect(s, vrfile, content_len-78, body_len);
 
       // Http Response: Parse Body
       auto body = std::make_unique<char[]>(body_len);
@@ -79,7 +79,6 @@ int main(int argc, char *argv[])
 
       string resp_str;
       std::copy(body.get(), body.get() + body_len, back_inserter(resp_str));
-      //cout << resp_str << endl;
       stringstream ss;
       ss << resp_str;
 
@@ -114,7 +113,7 @@ void http_connect(shared_ptr<iostream> s, const string& vrfile, long content_len
     throw runtime_error("can't connect\n");
 
   // Http Request: SetHeader
-  *s << "POST " << "/stream/v1/asr?appkey=" + appKey + "&sample_rate=8000" + " HTTP/1.1\r\n";
+  *s << "POST " << "/stream/v1/asr?appkey=" + appKey + "&sample_rate=16000" + " HTTP/1.1\r\n";
   *s << "HOST:" << "nls-gateway.cn-shanghai.aliyuncs.com\r\n";
   *s << "Content-Length:" << to_string(content_len) << "\r\n";
   *s << "Content-type:application/octet-stream\r\n";
@@ -125,7 +124,7 @@ void http_connect(shared_ptr<iostream> s, const string& vrfile, long content_len
   // Http Request: SetBody
   fstream ofstrm(vrfile.c_str(), ios::in | ios::binary);
   // Skip Wav Header
-  ofstrm.seekg(58);
+  ofstrm.seekg(78);
   //auto t0 = chrono::system_clock::now();
   auto buff = std::make_unique<char[]>(content_len);
   ofstrm.read(buff.get(), content_len);
@@ -149,8 +148,8 @@ void http_connect(shared_ptr<iostream> s, const string& vrfile, long content_len
   if (!s || http_version.substr(0, 5) != "HTTP/")
     throw runtime_error{"Invalid response\n"};
 
-  if (status_code != 200)
-    throw runtime_error{"Response returned with status code " + to_string(status_code)};
+  //if (status_code != 200)
+  //  throw runtime_error{"Response returned with status code " + to_string(status_code)};
 
   string header;
   while (getline(*s, header) && header !="\r") {
@@ -159,5 +158,19 @@ void http_connect(shared_ptr<iostream> s, const string& vrfile, long content_len
       body_len = stoi(header.substr(16, end_pos-16)); 
       //std::cout << "len:" << len << endl;
     }
+  }
+
+  if (status_code != 200) {
+	  auto body = std::make_unique<char[]>(body_len);
+	  s->read(body.get(), body_len);
+
+	  string resp_str;
+	  std::copy(body.get(), body.get() + body_len, back_inserter(resp_str));
+#ifdef _WIN32
+	  string gbkResult = boost::locale::conv::between(resp_str, "GBK", "UTF-8");
+	  cout << gbkResult << endl;
+#endif
+
+	  throw runtime_error{ "Response returned with status code " + to_string(status_code) };
   }
 }
