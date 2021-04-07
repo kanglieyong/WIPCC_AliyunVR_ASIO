@@ -4,9 +4,9 @@ CC = g++
 #OPT = -O2 -DNDEBUG
 OPT = -g2
 
-LDFLAGS=-pthread
+LDFLAGS= -pthread -lboost_system
 
-PROGRAMS = WIPCC_AliyunVR_ASIO.out
+PROGRAMS = WIPCC_AliyunVR_ASIO
 SRC = Main.c
 
 all: Main.o
